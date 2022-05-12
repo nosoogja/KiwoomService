@@ -18,7 +18,7 @@ def main():
     p("start")
 
     #########################################
-	### 종목 등록
+    ### 종목 등록
     try:
         ## 코드 ';' 구분 등록. POST 사용가능.
         srcHndl = urllib.request.urlopen("http://127.0.0.1:9797/RegStockCodes?code=000660;005930")	
@@ -30,13 +30,13 @@ def main():
         return
 
     #########################################
-	### 계좌 이벤트
+    ### 계좌 이벤트
     thd = Thread(target=GetEvtAccount)
     thd.start()
 
 
     #########################################
-	### 현재가 요청
+    ### 현재가 요청
     while True:
         data,err = GetRealPrice()
         if err != None :
@@ -59,7 +59,7 @@ def GetEvtAccount() :
             srcByte = srcHndl.read()
             res = json.loads(srcByte.decode("utf8"))
             # evt.Data.Code  는 6자리가 넘을경우 뒤 6자리 사용.
-			# 종목코드 앞에 A는 장내주식, j는 ELW종목, Q는 ETN종목을 의미 라고함.
+            # 종목코드 앞에 A는 장내주식, j는 ELW종목, Q는 ETN종목을 의미 라고함.
 
             p(res["Data"])
         except Exception as e:
