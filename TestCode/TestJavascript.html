@@ -1,0 +1,197 @@
+<html>
+<head>
+    <title>KiwoomService Test</title>
+</head>
+<!--
+----------------------------------
+1. Open Api 설치 및 서비스 사용 신청.
+2. KiwoomService 실행
+3. Login 완료
+4. 종목 등록 
+----------------------------------
+대충 되는지 끄적여 보았습니다.
+Test 는 투박한게 제맛 아입니까?
+이렇게 저렇게 보다 보면 이해 하리라 사료 됩니다.
+
+- 여기서 fetch 를 썼지만 axios 를 쓰는걸 추천한다. 
+- 종목이 많으면 POST로 등록 요청.
+
+-->
+
+<!-- --------------------------------------------------------------- -->
+<!-- --------------------------------------------------------------- -->
+<script type ='text/javascript'>
+
+window.onload = async ()=>{
+    p("start")
+
+	///////////////////////////////////////////
+	/// 종목 등록
+	/// 코드 ';' 구분 등록. POST 사용가능.
+    await onRegBtn()
+
+	///////////////////////////////////////////
+	/// 계좌 이벤트
+    GetEvtAccount()
+
+    ///////////////////////////////////////////
+	/// 현재가 요청
+    GetRealPrice()
+
+}
+
+async function GetRealPrice(){
+    while(true){
+        try{
+            var data = await HttpGet("http://127.0.0.1:9797/GetRealPrice")
+            
+            if(data.Result != 0){
+                WriteText("priceLog", `${data.Message}`)
+            }
+
+            var keys = Object.keys(data.Data)
+            for(var i=0; i<keys.length; i++){
+                if(i>=2){
+                    break;
+                }
+                WriteText(`cellCode_${i+1}`, `${keys[i]}`)
+                WriteText(`cellPrice_${i+1}`, `${data.Data[keys[i]]}`)
+
+            }
+            WriteText(`updateLog`, `${new Date()}`)
+            
+
+        }catch(err){
+            //p(err)
+            WriteText("priceLog", `${err}`)
+        }
+        await Sleep(2000)
+    }
+
+}
+
+async function onRegBtn(){
+    try{
+        var data = await HttpGet("http://127.0.0.1:9797/RegStockCodes?code=000660;005930")
+        p(data)
+        WriteText("regLog", JSON.stringify(data))
+    }catch(err){
+        p(err)
+        WriteText("regLog", `${err}`)
+    }
+}
+
+async function GetEvtAccount(){
+    while(true){
+        try{
+            var data = await HttpGet("http://127.0.0.1:9797/GetEvtAccount")
+
+            p("account-",data)
+            WriteText("accLog", JSON.stringify(data))
+
+        }catch(err){
+            //p(err)
+            WriteText("accLog", `${err}`)
+            await Sleep(1000)
+        }
+    }
+}
+
+
+
+async function Sleep(milli){
+    await new Promise((res,rej)=>{
+        setTimeout(()=>{res(1)}, milli)
+    })
+}
+
+async function HttpGet(url){
+    let resData = {}
+    await fetch(url, {})
+    .then((rs) =>{
+        return rs.json()
+    })
+    .then(rs=>{
+        resData = rs
+    })
+    .catch(err=>{
+        //p(err)
+        throw err
+    })
+
+    return resData
+}
+
+function WriteText(id, txt){
+    var obj = document.getElementById(id)
+    if(obj){
+        obj.innerText = txt
+    }
+}
+
+function p(...msg){
+	console.log(...msg)
+}
+
+</script>
+<!-- --------------------------------------------------------------- -->
+<!-- --------------------------------------------------------------- -->
+<style type="text/css">
+
+table, td, th {
+  border : 1px solid black;
+  border-collapse : collapse;
+};
+</style>
+<!-- --------------------------------------------------------------- -->
+<!-- --------------------------------------------------------------- -->
+<body>
+<h1>
+    KiwoomService
+</h1>
+<!--
+-->
+<div>
+    <button onClick="onRegBtn()" style="display:inline-block;"> 종목 등록</button>
+    <span id="regLog"> ... </span>
+</div>
+<br/>
+
+<div>
+    <span>계좌:</span> 
+    <span id="accLog">...</span>
+</div>
+
+<br/>
+<div>
+    <div>
+        <span>
+        업데이트 시간: 
+        </span>
+        <span id="updateLog">
+            ...
+        </span>
+
+    </div>
+    <div id="priceLog">...</div>
+
+    <table style="border:1px solid #333;" >
+        <tr>
+            <th style="width:100px;">종목</th>
+            <th style="width:100px;">현재가</th>
+        </tr>
+        <tr >
+            <td id="cellCode_1"></td>
+            <td id="cellPrice_1"></td>
+
+        </tr>
+        <tr >
+            <td id="cellCode_2"></td>
+            <td id="cellPrice_2"></td>
+
+        </tr>
+    </table>
+</div>
+
+</body>
+</html>
