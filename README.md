@@ -20,8 +20,9 @@ https://www.kiwoom.com/h/customer/download/VOpenApiInfoView
 
 + Port 가 사용중일 경우 'KiwoomService.exe -port 다른포트' 명령어로 실행
 
-+ **Python Test Code**   
+## Python Test Code
 일단 멀지도 가깝지도 않은 Python test code.
+다른 언어는 위 파일로 확인.
 
 ``` python
 from logging import raiseExceptions
