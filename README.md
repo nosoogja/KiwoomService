@@ -8,7 +8,7 @@ Kiwoom OpenApi 연결하여 현재 가격을 받아 연결된 Client 에 제공�
 연결 요청은 Http 이며 python, c#, Go, javascript 로 손가락 아프게 끄적여 놨음.
 다른 언어도 별로 어렵지 않아요.
 
-+ **사용**   
+## 사용
 + 키움 증권 사이트에서 OpenAPI 설치와 사용 신청.
 https://www.kiwoom.com/h/customer/download/VOpenApiInfoView
 
